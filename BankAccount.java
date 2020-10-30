@@ -3,10 +3,14 @@ public class BankAccount{
   private int accountID;
   private String password;
 
-  BankAccount(int newaccountID, String newpassword){
+  public BankAccount(int newaccountID, String newpassword){
     balance = 0;
     accountID = newaccountID;
     password = newpassword;
+  }
+
+  public String toString(){
+    return ("#"+accountID+"\t$"+balance);
   }
 
   public double getBalance(){
@@ -41,8 +45,22 @@ public class BankAccount{
     }
   }
 
-  public String toString(){
-    return (String.valueOf(accountID)+"\t"+String.valueOf(balance));
+  private boolean authenticate(String password){
+    return (this.password.equals(password));
   }
 
+  public boolean transferTo(BankAccount other, double amount, String password){
+    if (this.authenticate(password) && amount >= 0 && this.withdraw(amount)){
+      if (other.deposit(amount)){
+        return true;
+      }
+      else{
+        System.out.println("CRITICAL ERROR! $"+amount +
+                           " withdrawn from Account #" +  this.getAccountID() +
+                           "Failed to add to Account #"+ other.getAccountID());
+      }
+    }
+    return false;
+  }
+  
 }
